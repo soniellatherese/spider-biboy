@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spiderman Birthday Quest</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background: #111;
+      color: #fff;
+    }
+    .level {
+      display: none;
+      margin-top: 50px;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: crimson;
+      color: #fff;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    #final-message {
+      font-size: 24px;
+      margin-top: 20px;
+      color: gold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🕸️ Spiderman Birthday Quest 🕸️</h1>
+
+  <!-- Level 1 -->
+  <div id="level1" class="level active">
+    <h2>Level 1: Warm-up Training</h2>
+    <p>What should Spidey do to power up?</p>
+    <button onclick="level1Choice('correct')">🏀 Shoot Hoops</button>
+    <button onclick="level1Choice('correct')">🏋️ Carry Dumbbells</button>
+    <button onclick="level1Choice('wrong')">😴 Nap</button>
+    <p id="level1-msg"></p>
+    <button id="toLevel2" style="display:none;" onclick="nextLevel(2)">Next Level ➡️</button>
+  </div>
+
+  <!-- Level 2 -->
+  <div id="level2" class="level">
+    <h2>Level 2: Spider Sense Memory Game</h2>
+    <p>Find the hidden 🌱 fiddle plant!</p>
+    <div class="cards" id="card-container"></div>
+    <p id="level2-msg"></p>
+    <button id="toLevel3" style="display:none;" onclick="nextLevel(3)">Final Level ➡️</button>
+  </div>
+
+  <!-- Level 3 -->
+  <div id="level3" class="level">
+    <h2>Final Boss: The Birthday Beast</h2>
+    <p>The Birthday Beast appears! Only your web powers can defeat it.</p>
+    <button onclick="defeatBoss()">🕸️ Shoot Web!</button>
+    <div id="final-message"></div>
+    <canvas id="confetti-canvas"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    function level1Choice(choice) {
+      const msg = document.getElementById('level1-msg');
+      if (choice === 'correct') {
+        msg.textContent = "Nice! Spidey is getting stronger!";
+        document.getElementById('toLevel2').style.display = 'inline-block';
+      } else {
+        msg.textContent = "Come on Spidey, no napping during training!";
+      }
+    }
+
+    function nextLevel(level) {
+      document.querySelectorAll('.level').forEach(div => div.classList.remove('active'));
+      document.getElementById('level' + level).classList.add('active');
+    }
+
+    // Level 2 memory game setup
+    const cards = ["🍕", "🍣", "🌱", "🍛", "🥤"];
+    function setupCards() {
+      const container = document.getElementById('card-container');
+      container.innerHTML = '';
+      cards.sort(() => Math.random() - 0.5);
+      cards.forEach(symbol => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = "?";
+        card.onclick = () => flipCard(card, symbol);
+        container.appendChild(card);
+      });
+    }
+
+    function flipCard(card, symbol) {
+      card.textContent = symbol;
+      if (symbol === "🌱") {
+        document.getElementById('level2-msg').textContent = "Spider Sense activated! You found the fiddle plant!";
+        document.getElementById('toLevel3').style.display = 'inline-block';
+      } else {
+        setTimeout(() => (card.textContent = "?"), 800);
+      }
+    }
+
+    function defeatBoss() {
+      document.getElementById('final-message').textContent = "🎉 Mission Complete! Happy Birthday, [His Name]! 🎂🕸️";
+      confetti();
+    }
+
+    setupCards();
+  </script>
+</body>
+</html>
