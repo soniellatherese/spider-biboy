@@ -1,0 +1,147 @@
+:root{
+  --sky:#07193a;           /* dark blue main color */
+  --sky-deep:#04112a;
+  --building:#0f2140;
+  --building-2:#112a4e;
+  --window:#ffd863;
+  --pixel: 8px;            /* base pixel unit - change for bigger/smaller pixels */
+}
+
+/* make sure body fills screen and background is stable */
+body, html { 
+  height:100%; 
+  margin:0; 
+  font-family: 'Press Start 2P', monospace; 
+  background: var(--sky); 
+  overflow:hidden; 
+}
+
+/* container covering the whole viewport */
+.pixel-city {
+  position:fixed;
+  inset:0;
+  z-index:0;               /* keep under your game UI */
+  background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 70% ); 
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 1px 2px, 2px 1px;
+  filter: contrast(1.05);
+}
+
+/* pixel grid wrapper to scale blocks as pixels */
+.pixel-grid {
+  position:absolute;
+  inset:0;
+  transform: scale(1);
+  transform-origin: center top;
+}
+
+/* skyline row */
+.skyline {
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:42%;
+  display:flex;
+  align-items:flex-end;
+  gap: calc(var(--pixel) * 1);
+  padding: calc(var(--pixel) * 2);
+  pointer-events:none;
+}
+
+.building {
+  width: calc(var(--pixel) * var(--w));
+  height: calc(var(--pixel) * var(--h));
+  background: linear-gradient(180deg, var(--building) 0%, var(--building-2) 100%);
+  border-radius: 2px;
+  position:relative;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+  image-rendering: pixelated;
+}
+
+.building::after{
+  content: "";
+  position:absolute;
+  inset:6% 6% 6% 6%;
+  background-image:
+    linear-gradient(0deg, transparent 70%, rgba(0,0,0,0.08) 70%),
+    linear-gradient(90deg, transparent 70%, rgba(0,0,0,0.08) 70%),
+    repeating-linear-gradient(0deg, var(--window) 0 calc(var(--pixel) * 0.8), transparent calc(var(--pixel) * 0.8) calc(var(--pixel) * 1.6));
+  background-size: 100% 100%, 100% 100%, calc(var(--pixel) * 0.9) calc(var(--pixel) * 1.6);
+  opacity:0.95;
+  mix-blend-mode: screen;
+  pointer-events:none;
+}
+
+.building.light::after{ filter: brightness(1.15); }
+.building.dim::after{ filter: brightness(0.6); opacity:0.75; }
+
+/* stars */
+.stars{
+  position:absolute; inset:0; pointer-events:none;
+  z-index:0;
+}
+.star{
+  position:absolute;
+  width:2px; height:2px;
+  background: #fff;
+  opacity:0.9;
+  border-radius:1px;
+  animation: blink 3s infinite;
+}
+@keyframes blink {
+  0% { opacity:0.15; transform: scale(1); }
+  50%{ opacity:1; transform: scale(1.3); }
+  100%{ opacity:0.15; transform: scale(1); }
+}
+
+/* parallax clouds */
+.clouds {
+  position:absolute; left:-20%; right:-20%; top:6%; height:30%; pointer-events:none; z-index:0;
+  overflow:visible;
+}
+.clouds .layer {
+  position:absolute; top:0; left:0;
+  height:100%;
+  width:140%;
+  opacity:0.12;
+  transform: translateX(0);
+  filter: blur(0.3px);
+}
+.clouds .layer.layer1{ 
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.06) 0 15%, transparent 15% 30% , rgba(255,255,255,0.06) 30% 45%, transparent 45% 100% );
+  animation: moveClouds 30s linear infinite;
+}
+.clouds .layer.layer2{ 
+  top:10%; opacity:0.07; transform: scaleY(0.9);
+  animation: moveClouds 50s linear infinite reverse;
+}
+@keyframes moveClouds { 
+  from { transform: translateX(-10%); } 
+  to { transform: translateX(10%); } 
+}
+
+/* web overlay */
+.web-overlay{
+  position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0.12;
+  mix-blend-mode: screen;
+}
+
+/* optional retro scanlines */
+.scanlines{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 100% 4px;
+  opacity:0.06;
+}
+
+/* responsiveness */
+@media (max-width:800px){
+  :root{ --pixel:6px; }
+}
+@media (max-width:420px){
+  :root{ --pixel:5px; }
+}
